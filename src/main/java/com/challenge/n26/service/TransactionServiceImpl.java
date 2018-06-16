@@ -41,7 +41,7 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public void addTransaction(TransactionRequest txn) {
+    public void addTransaction(TransactionRequest txn) throws InvalidTxnException{
         if (isBefore(txn)) throw new InvalidTxnException();
         int index = getIndexOfCircularBuffer(txn.getTimestamp());
         circularBuffer[index].addTxn(txn, index);

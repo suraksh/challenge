@@ -4,6 +4,7 @@ package com.challenge.n26.service;
 import com.challenge.n26.controller.statistics.response.StatisticsResponse;
 import com.challenge.n26.controller.transaction.request.TransactionRequest;
 import com.challenge.n26.model.GlobalTxnStatistics;
+import com.challenge.n26.service.exception.InvalidTxnException;
 
 public interface TransactionService {
 
@@ -13,7 +14,7 @@ public interface TransactionService {
      * txn to the in-memory circularBuffer.
      * @param txn
      */
-    public void addTransaction(TransactionRequest txn);
+    public void addTransaction(TransactionRequest txn) throws InvalidTxnException;
 
     /**
      * Returns the statistic based on the transactions which happened in the last 60 seconds.
