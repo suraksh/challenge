@@ -5,6 +5,16 @@ import com.challenge.n26.controller.transaction.request.TransactionRequest;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+
+/**
+ *  The class holds statistics of min, max, sum and count.
+ * This is the core class and data structure used by {@link com.challenge.n26.service.TransactionService}
+ * The class {@link com.challenge.n26.service.TransactionService} creates an array of the class
+ * {@code BufferTxnStatistics} and treats this array as circularBuffer.
+ * For each transaction request, {@link com.challenge.n26.service.TransactionService} calculates the index of the array
+ * {@code BufferTxnStatistics} and updates the statistics in that corresponding index.
+ * This class uses {@link ReentrantLock} to handle concurrent requests.
+ */
 public class BufferTxnStatistics {
 
     private double min;
@@ -18,6 +28,11 @@ public class BufferTxnStatistics {
         max = Double.MIN_VALUE;
     }
 
+    /**
+     * Adds the transaction amount to current index statistics.
+     * @param txn
+     * @param index
+     */
     public void addTxn(TransactionRequest txn, int index) {
         lock.lock();
         try {
@@ -30,6 +45,9 @@ public class BufferTxnStatistics {
         }
     }
 
+    /*
+    Helper method which returns Statistics from the current buffer statistics.
+     */
     public Statistics convertCurrStatDetailsToStatistics() {
         lock.lock();
         Statistics st = new Statistics();
@@ -45,6 +63,11 @@ public class BufferTxnStatistics {
         return st;
     }
 
+    /**
+     * Reset statistics of the current index of {@code {@link BufferTxnStatistics}} and also
+     * updates the statistics of {@link GlobalTxnStatistics}
+     * @param globalTxnStatistics
+     */
     public void cleanUpTxn(GlobalTxnStatistics globalTxnStatistics) {
         lock.lock();
         try {

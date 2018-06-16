@@ -7,6 +7,15 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 
+/**
+ * The class maintains global statistics such as min, max, count, sum which is used by
+ * {@link com.challenge.n26.controller.statistics.StatisticsController} to return statistics.
+ * The class {@link com.challenge.n26.service.TransactionService} also updates the global statistics
+ * for each valid transaction by holding ReentrantLock.
+ * Scheduler removes statistics count from {@link BufferTxnStatistics} and removes the corresponding
+ * count and sum of that buffer index from {@code GlobalTxnStatistics}.
+ * All update operations uses lock to handle concurrent modification.
+ */
 public class GlobalTxnStatistics {
 
     private Transaction minTxn;
@@ -20,6 +29,11 @@ public class GlobalTxnStatistics {
         maxTxn = new Transaction(Double.MIN_VALUE, 0L);
     }
 
+    /**
+     * Called by {@link com.challenge.n26.service.TransactionServiceImpl} to update
+     * global statistics.
+     * @param txn
+     */
     public void updateGlobalTxnStatistics(TransactionRequest txn) {
         lock.lock();
         try{
@@ -38,6 +52,14 @@ public class GlobalTxnStatistics {
         }
     }
 
+    /**
+     * Called by GET statistics endpoint, to return current global statistics of all transactions within
+     * last 60 seconds.
+     *
+     * @param circularBuffer
+     * @param evictionInMilliseconds
+     * @return
+     */
     public StatisticsResponse getStatistics(BufferTxnStatistics[] circularBuffer, int evictionInMilliseconds) {
         if(this.count == 0L) return new StatisticsResponse();
         if(minOrMaxExpired(evictionInMilliseconds)) {
@@ -74,11 +96,19 @@ public class GlobalTxnStatistics {
         return st;
     }
 
+    /*
+    Helper method to identify if the global min or max holds expired transaction min or max amount.
+     */
     private boolean minOrMaxExpired(int evictionInMilliseconds) {
         long evictionTimeLimit = System.currentTimeMillis() - evictionInMilliseconds;
         return minTxn.getTimestamp() < evictionTimeLimit || maxTxn.getTimestamp() < evictionTimeLimit;
     }
 
+    /**
+     * Scheduler calls this method to remove old bucket statistics from global statistics count.
+     * @param count
+     * @param sum
+     */
     public void removeBucketStatistics(long count, double sum) {
         lock.lock();
         try{

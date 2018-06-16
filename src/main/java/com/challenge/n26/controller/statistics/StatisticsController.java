@@ -15,14 +15,28 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+
+/**
+ * Controller for GET statistics endpoint.
+ * Returns the statistic based on the transactions which happened in the last 60 seconds.
+ */
 @RestController
 @RequestMapping("/statistics")
 @Api(value = "Statistics Controller")
 public class StatisticsController {
 
+
+    /**
+     * TransactionService.
+     */
     @Autowired
     private TransactionService transactionService;
 
+
+    /**
+     * Returns the statistic based on the transactions which happened in the last 60 seconds
+     * @return StatisticsResponse with 200 status.
+     */
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Returns Statistics", notes = "Statistics of transactions of last 60 seconds ",
             code = 200)

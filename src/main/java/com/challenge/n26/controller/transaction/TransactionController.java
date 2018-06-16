@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+/**
+ * Controller For POST transactions endpoint.
+ * Validate and persist the transaction to in-memory.
+ */
 @RestController
 @RequestMapping("/transactions")
 @Api(value = "Transaction Controller")
@@ -23,6 +27,13 @@ public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
+
+    /**
+     * Validates and persists transaction.
+     * @param transactionRequest
+     * @return 201 if transaction was successfully persisted.
+     * 204 if transaction is older than 60 seconds.
+     */
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ApiOperation(value = "Validate and persist Transaction", notes = "Add transaction to in-memory Data structure",
             code = 201)
