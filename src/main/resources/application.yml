@@ -1,1 +1,4 @@
-eviction: 60
+n26:
+  eviction:
+    milliseconds: 60000
+    groupingFactor: 1000
