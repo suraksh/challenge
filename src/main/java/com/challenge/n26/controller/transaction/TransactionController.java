@@ -27,7 +27,6 @@ public class TransactionController {
     @Autowired
     private TransactionService transactionService;
 
-
     /**
      * Validates and persists transaction.
      * @param transactionRequest
