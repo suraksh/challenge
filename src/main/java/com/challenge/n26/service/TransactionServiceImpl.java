@@ -65,9 +65,8 @@ public class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
-    public void resetOldBucket() {
-        long currentTime = System.currentTimeMillis();
-        int index = getIndexOfCircularBuffer(currentTime);
+    public void resetOldBucket(long currentTimeStamp) {
+        int index = getIndexOfCircularBuffer(currentTimeStamp+GROUPING_FACTOR);
         circularBuffer[index].cleanUpTxn(globalTxnStatistics);
         logger.info(String.format("Clearing bucket of %s due to scheduler call ", index));
     }

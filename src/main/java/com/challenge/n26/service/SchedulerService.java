@@ -21,7 +21,7 @@ public class SchedulerService {
      */
     @Scheduled(fixedRate = 1000)
     public void oldBucket() {
-        transactionService.resetOldBucket();
+        transactionService.resetOldBucket(System.currentTimeMillis());
     }
 
 }

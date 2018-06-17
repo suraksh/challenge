@@ -27,6 +27,6 @@ public interface TransactionService {
      * to 0 and also removes the corresponding bucket statistics from {@link GlobalTxnStatistics}
      * This method is called from scheduler every second.
      */
-    public void resetOldBucket();
+    public void resetOldBucket(long currentTimeStamp);
 
 }

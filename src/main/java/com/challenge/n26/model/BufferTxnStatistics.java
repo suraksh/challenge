@@ -69,11 +69,14 @@ public class BufferTxnStatistics {
      * @param globalTxnStatistics
      */
     public void cleanUpTxn(GlobalTxnStatistics globalTxnStatistics) {
+        long countCopy = this.count;
+        double sumCopy = this.sum;
+        globalTxnStatistics.removeBucketStatistics(countCopy, sumCopy);
         lock.lock();
         try {
-            globalTxnStatistics.removeBucketStatistics(this.count, this.sum);
-            this.count = 0;
-            this.sum = 0;
+            //globalTxnStatistics.removeBucketStatistics(this.count, this.sum);
+            this.count -= countCopy;
+            this.sum -= sumCopy;
             this.max = Double.MIN_VALUE;
             this.min = Double.MAX_VALUE;
         }finally {
